@@ -5,25 +5,28 @@ import java.util.List;
 
 public class Storage {
     private List<String> items;
-    private  static Storage instance;
+    private  static volatile Storage instance;
 
-    public List<String> getItems() {
+    public  List<String> getItems() {
+
         return items;
     }
 
     public static Storage getInstance() {
-        if (instance==null){
-            instance= new Storage();
-            System.out.println("creating instance");
-        }
+        synchronized (Storage.class) {
+            if (instance == null) {
+                instance = new Storage();
+                System.out.println("creating instance");
+            }
 
-        return instance;
+            return instance;
+        }
     }
 
     private Storage() {
         items=new ArrayList<>();
     }
-    public void addItem(String item){
+    public synchronized void addItem(String item){
         items.add(item);
     }
 }

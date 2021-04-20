@@ -3,19 +3,22 @@ package com.company;
 public class Main {
 
     public static void main(String[] args) {
-	Worker workers1= new Worker();
-	Worker workers2= new Worker();
-workers1.work("Book");
-        workers1.work("Shoes");
-        System.out.println(" Worker 1 items");
-         for (String item: workers1.getStorage().getItems()){
-             System.out.print(item+ " ");
-         }
-        System.out.println();
-        System.out.println(" Worker 2 items");
-        for (String item: workers2.getStorage().getItems()){
-            System.out.print(item+ " ");
+        Thread worker1 = new Thread(() -> Storage.getInstance().addItem("Book"));
+        Thread worker2 = new Thread(() -> Storage.getInstance().addItem("Shoes"));
+
+        worker1.start();
+        worker2.start();
+
+        try {
+            worker1.join();
+            worker2.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
-        System.out.println();
+
+        for (String item : Storage.getInstance().getItems()) {
+            System.out.print(item + " ");
+
+        }
     }
 }
